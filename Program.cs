@@ -7,7 +7,7 @@ class Program
     {
         try
         {
-            Library.Go(0.5f, BaseBox.Task);
+            Library.Go(0.5f, ModulatedRing.Task);
         }
         catch (Exception e)
         {
