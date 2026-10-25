@@ -1,4 +1,5 @@
 using System.Windows.Forms;//later
+using System.Numerics; //just in case
 using PicoGK;
 using Leap71.ShapeKernel;
 
@@ -18,9 +19,25 @@ public class ModulatedRing
 
     public ModulatedRing(RingParams oParams)
     {
+        //constructor should read like a process plan
         m_oRingParams = oParams;
-        m_oWorldCS = oParams.oWorldCS;
-        m_voxRingBody = voxBuildRing();
+        List<String> astrErrors = oParams.astrGetErrors();
+        m_oWorldCS = new LocalFrame (new(0, 0, 0));
+
+        if (astrErrors.Count > 0)
+        {
+            foreach (String str in astrErrors)
+            {
+                Library.Log(str);
+            }
+            Leap71.ShapeKernel.BaseBox oDummy = new(m_oWorldCS);
+            m_voxRingBody = oDummy.voxConstruct();
+        }
+        else
+        {
+            m_oWorldCS = oParams.oWorldCS;
+            m_voxRingBody = voxBuildRing();
+        }
 
     }
 
@@ -43,6 +60,11 @@ public class ModulatedRing
     public LocalFrame oGetWorldCS()
     {
         return m_oWorldCS;
+    }
+
+    public Voxels voxGetBody()
+    {
+        return m_voxRingBody;
     }
 
     private RingParams m_oRingParams;
