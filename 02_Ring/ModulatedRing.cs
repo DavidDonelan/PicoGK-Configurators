@@ -1,5 +1,4 @@
-using System.Numerics;
-using System.Windows.Forms;
+using System.Windows.Forms;//later
 using PicoGK;
 using Leap71.ShapeKernel;
 
@@ -10,45 +9,44 @@ public class ModulatedRing
     {
         RingParams oInitialParams = new();
         ModulatedRing oInitialRing = new(oInitialParams);
-        Sh.PreviewVoxels(oInitialRing.voxConstruct(), Cp.clrLavender);
+        float fWorldCSSize = oInitialRing.m_oRingParams.fSectionRadiusMM;
+        Sh.PreviewFrame(new(),fWorldCSSize); //preview default origin to confirm transformations
+        Sh.PreviewFrame(oInitialRing.m_oWorldCS,fWorldCSSize); //preview the local CS of the ring
+        Sh.PreviewVoxels(oInitialRing.m_voxRingBody, Cp.clrLavender); //The Initial ring is shown in colour Purple
+        //App Run here for later
     }
 
-    public ModulatedRing(RingParams oInput) //not sure if vector as arguments or some parameter list object
+    public ModulatedRing(RingParams oParams)
     {
-        m_oRingParams = oInput;
-        m_oWorldCS = oInput.oWorldCS;
+        m_oRingParams = oParams;
+        m_oWorldCS = oParams.oWorldCS;
+        m_voxRingBody = voxBuildRing();
 
     }
 
-    public Voxels voxConstruct()
+    private Voxels voxBuildRing()
     {
-        Voxels voxModRing = new();
-        LocalFrame oLocalFrame  = m_oWorldCS;
-        BaseRing oShape         = new BaseRing(oLocalFrame, m_oRingParams.fRingRadiusMM);
+        BaseRing oShape = new BaseRing(m_oWorldCS, m_oRingParams.fRingRadiusMM);
         oShape.SetRadius(new SurfaceModulation(fGetRingRadius));
-        voxModRing = oShape.voxConstruct();
-        return voxModRing;
+        return oShape.voxConstruct();
     }
 
     float fGetRingRadius(float fPhi, float fAlpha)
     {
         fPhi += m_oRingParams.fGetTwist()*fAlpha;
-        float fRadius = m_fRadius2 - m_fAmplitude1 * MathF.Cos(m_fRingLobes*fPhi)
-         + m_fAmplitude2 * MathF.Cos(m_fProfileLobes*fAlpha);
-
+        float fRadius = m_oRingParams.fSectionRadiusMM - m_oRingParams.fSectionAmpMM * MathF.Cos(m_oRingParams.nSectionLobes*fPhi)
+         + m_oRingParams.fRingAmpMM * MathF.Cos(m_oRingParams.nRingLobes*fAlpha);
 
         return fRadius;
     }
 
-    public RingParams m_oRingParams;
-    public LocalFrame m_oWorldCS;
+    public LocalFrame oGetWorldCS()
+    {
+        return m_oWorldCS;
+    }
 
+    private RingParams m_oRingParams;
+    private LocalFrame m_oWorldCS;
+    private Voxels m_voxRingBody;
 
-
-    //goal here is too create the next level of a configurator
-    //Pass the parameters as a set
-    //Also the boolean variable test for the Delegate function for Surface modulation
-    //Methods: Task,constructor, rather a vox construct, surfmod function
-    //atributes: switch case for different delegate functions within the surfacemod
-    //Parameters: Ringlobes, Profilelobes, radialtwist, r1, r2 
 }
