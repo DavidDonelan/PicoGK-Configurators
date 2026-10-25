@@ -2,17 +2,17 @@ using System.Numerics;
 using System.Windows.Forms;
 using PicoGK;
 
-public class BaseBox
+public class ConfigurableBox
 {
     public static void Task()
     {
-        BaseBox initialBox = new(new Vector3(10f, 10f, 15f));
+        ConfigurableBox initialBox = new(new Vector3(10f, 10f, 15f));
         Library.oViewer().Add(initialBox.mshConstruct());
 
         Application.Run(new BoxForm(10f, 10f, 15f, Library.oViewer()));
     }
 
-    public BaseBox(Vector3 vecSize)
+    public ConfigurableBox(Vector3 vecSize)
     {
         matTransform = Matrix4x4.CreateScale(vecSize / 2);
 

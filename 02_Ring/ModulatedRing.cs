@@ -14,7 +14,14 @@ public class ModulatedRing
         Sh.PreviewFrame(new(),fWorldCSSize); //preview default origin to confirm transformations
         Sh.PreviewFrame(oInitialRing.m_oWorldCS,fWorldCSSize); //preview the local CS of the ring
         Sh.PreviewVoxels(oInitialRing.m_voxRingBody, Cp.clrLavender); //The Initial ring is shown in colour Purple
-        //App Run here for later
+        
+        //Test to see if remove object work
+        /*Thread.Sleep(3000);
+        Library.oViewer().RemoveAllObjects();
+        Thread.Sleep(3000);
+        Sh.PreviewVoxels(oInitialRing.m_voxRingBody, Cp.clrRed);*/
+
+        Application.Run(new ModulatedRingForm(oInitialParams,Library.oViewer()));
     }
 
     public ModulatedRing(RingParams oParams)

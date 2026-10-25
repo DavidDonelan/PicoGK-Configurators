@@ -63,7 +63,7 @@ public class BoxForm : Form
         lblZ.Text = $"Z: {z}";
 
         oViewer.RemoveAllObjects();
-        BaseBox box = new(new Vector3(x, y, z));
+        ConfigurableBox box = new(new Vector3(x, y, z));
         oViewer.Add(box.mshConstruct());
     }
 }
